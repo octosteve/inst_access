@@ -1,0 +1,71 @@
+PATH
+  remote: .
+  specs:
+    inst_access (0.1.0)
+      activesupport (>= 5)
+      json-jwt (= 1.13.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (6.1.4.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
+    aes_key_wrap (1.1.0)
+    bindata (2.4.10)
+    byebug (11.1.3)
+    concurrent-ruby (1.1.9)
+    diff-lcs (1.4.4)
+    docile (1.4.0)
+    i18n (1.8.10)
+      concurrent-ruby (~> 1.0)
+    json (2.6.1)
+    json-jwt (1.13.0)
+      activesupport (>= 4.2)
+      aes_key_wrap
+      bindata
+    minitest (5.14.4)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.1)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-mocks (3.10.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-support (3.10.2)
+    simplecov (0.21.2)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.12.3)
+    simplecov-json (0.2.3)
+      json
+      simplecov
+    simplecov_json_formatter (0.1.3)
+    timecop (0.9.4)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
+    zeitwerk (2.5.1)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  bundler
+  byebug
+  inst_access!
+  rspec
+  simplecov
+  simplecov-json
+  timecop
+
+BUNDLED WITH
+   2.2.6

@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
-bundle check || bundle install
-bundle exec rspec spec
+docker-compose run --rm inst_access bundle insall
+docker-compose run --rm inst_access bundle exec rspec
