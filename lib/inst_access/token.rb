@@ -20,7 +20,7 @@
 
 module InstAccess
   class Token
-    ISSUER = "instructure:inst_access".freeze
+    ISSUER = 'instructure:inst_access'
     ENCRYPTION_ALGO = :'RSA-OAEP'
     ENCRYPTION_METHOD = :'A128CBC-HS256'
 
@@ -65,7 +65,7 @@ module InstAccess
 
     def to_jws
       key = InstAccess.config.signing_key
-      raise ConfigError, "Private signing key needed to produce tokens" unless key.private?
+      raise ConfigError, 'Private signing key needed to produce tokens' unless key.private?
 
       jwt = JSON::JWT.new(jwt_payload)
       jwt.sign(key)
@@ -74,6 +74,7 @@ module InstAccess
     class << self
       private :new
 
+      # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity
       def for_user(
         user_uuid: nil,
         account_uuid: nil,
@@ -83,9 +84,7 @@ module InstAccess
         user_global_id: nil,
         real_user_global_id: nil
       )
-        if user_uuid.blank? || account_uuid.blank?
-          raise ArgumentError, "Must provide user uuid and account uuid"
-        end
+        raise ArgumentError, 'Must provide user uuid and account uuid' if user_uuid.blank? || account_uuid.blank?
 
         now = Time.now.to_i
         payload = {
@@ -93,7 +92,7 @@ module InstAccess
           iat: now,
           exp: now + 1.hour.to_i,
           sub: user_uuid,
-          acct: account_uuid,
+          acct: account_uuid
         }
         payload[:canvas_domain] = canvas_domain if canvas_domain
         payload[:masq_sub] = real_user_uuid if real_user_uuid
@@ -103,13 +102,14 @@ module InstAccess
 
         new(payload)
       end
+      # rubocop:enable Metrics/ParameterLists, Metrics/CyclomaticComplexity
 
       # Takes an unencrypted (but signed) token string
       def from_token_string(jws)
         sig_key = InstAccess.config.signing_key
         jwt = begin
           JSON::JWT.decode(jws, sig_key)
-        rescue => e
+        rescue StandardError => e
           raise InvalidToken, e
         end
         raise TokenExpired if jwt[:exp] < Time.now.to_i
@@ -117,10 +117,10 @@ module InstAccess
         new(jwt.to_hash)
       end
 
-      def is_token?(string)
+      def token?(string)
         jwt = JSON::JWT.decode(string, :skip_verification)
         jwt[:iss] == ISSUER
-      rescue
+      rescue StandardError
         false
       end
     end

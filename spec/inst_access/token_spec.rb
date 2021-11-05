@@ -36,48 +36,48 @@ describe InstAccess::Token do
     end
   end
 
-  describe ".is_token?" do
+  describe '.token?' do
     it 'returns false for non-JWTs' do
-      expect(described_class.is_token?('asdf1234stuff')).to eq(false)
+      expect(described_class.token?('asdf1234stuff')).to eq(false)
     end
 
-    it "returns false for JWTs from a different issuer" do
+    it 'returns false for JWTs from a different issuer' do
       jwt = JSON::JWT.new(iss: 'bridge').to_s
-      expect(described_class.is_token?(jwt)).to eq(false)
+      expect(described_class.token?(jwt)).to eq(false)
     end
 
     it 'returns true for an InstAccess token' do
-      expect(described_class.is_token?(unencrypted_token)).to eq(true)
+      expect(described_class.token?(unencrypted_token)).to eq(true)
     end
 
     it 'returns true for an expired InstAccess token' do
       token = unencrypted_token # instantiate it to set the expiration
       Timecop.travel(3601) do
-        expect(described_class.is_token?(token)).to eq(true)
+        expect(described_class.token?(token)).to eq(true)
       end
     end
   end
 
-  describe ".for_user" do
-    it "blows up without a user uuid" do
+  describe '.for_user' do
+    it 'blows up without a user uuid' do
       expect do
         described_class.for_user(user_uuid: '', account_uuid: 'acct-uuid')
       end.to raise_error(ArgumentError)
     end
 
-    it "blows up without an account uuid" do
+    it 'blows up without an account uuid' do
       expect do
         described_class.for_user(user_uuid: 'user-uuid', account_uuid: '')
       end.to raise_error(ArgumentError)
     end
 
-    it "creates an instance for the given uuids" do
+    it 'creates an instance for the given uuids' do
       id = described_class.for_user(user_uuid: 'user-uuid', account_uuid: 'acct-uuid')
       expect(id.user_uuid).to eq('user-uuid')
       expect(id.masquerading_user_uuid).to be_nil
     end
 
-    it "accepts other details" do
+    it 'accepts other details' do
       id = described_class.for_user(
         user_uuid: 'user-uuid',
         account_uuid: 'acct-uuid',
@@ -91,41 +91,41 @@ describe InstAccess::Token do
     end
   end
 
-  context "without being configured" do
-    it "#to_token_string blows up" do
+  context 'without being configured' do
+    it '#to_token_string blows up' do
       id = described_class.for_user(user_uuid: 'user-uuid', account_uuid: 'acct-uuid')
       expect do
         id.to_token_string
       end.to raise_error(InstAccess::ConfigError)
     end
 
-    it ".from_token_string blows up" do
+    it '.from_token_string blows up' do
       expect do
         described_class.from_token_string(unencrypted_token)
       end.to raise_error(InstAccess::ConfigError)
     end
   end
 
-  context "when configured only for signature verification" do
+  context 'when configured only for signature verification' do
     around do |example|
       InstAccess.with_config(signing_key: signing_pub_key) do
         example.run
       end
     end
 
-    it "#to_token_string blows up" do
+    it '#to_token_string blows up' do
       id = described_class.for_user(user_uuid: 'user-uuid', account_uuid: 'acct-uuid')
       expect do
         id.to_token_string
       end.to raise_error(InstAccess::ConfigError)
     end
 
-    it ".from_token_string decodes the given token" do
+    it '.from_token_string decodes the given token' do
       id = described_class.from_token_string(unencrypted_token)
       expect(id.user_uuid).to eq('user-uuid')
     end
 
-    it ".from_token_string blows up if the token is expired" do
+    it '.from_token_string blows up if the token is expired' do
       token = unencrypted_token # instantiate it to set the expiration
       Timecop.travel(3601) do
         expect do
@@ -134,7 +134,7 @@ describe InstAccess::Token do
       end
     end
 
-    it ".from_token_string blows up if the token has a bad signature" do
+    it '.from_token_string blows up if the token has a bad signature' do
       # reconfigure with the wrong signing key so the signature doesn't match
       InstAccess.with_config(signing_key: encryption_pub_key) do
         expect do
@@ -144,7 +144,7 @@ describe InstAccess::Token do
     end
   end
 
-  context "when configured for token generation" do
+  context 'when configured for token generation' do
     around do |example|
       InstAccess.with_config(
         signing_key: signing_priv_key, encryption_key: encryption_pub_key
@@ -153,7 +153,7 @@ describe InstAccess::Token do
       end
     end
 
-    it "#to_token_string signs and encrypts the payload, returning a JWE" do
+    it '#to_token_string signs and encrypts the payload, returning a JWE' do
       id_token = a_token.to_token_string
       # JWEs have 5 base64-encoded sections, each separated by a dot
       expect(id_token).to match(/[\w-]+\.[\w-]+\.[\w-]+\.[\w-]+\.[\w-]+/)
@@ -164,7 +164,7 @@ describe InstAccess::Token do
       expect(jwt[:sub]).to eq('user-uuid')
     end
 
-    it ".from_token_string still decodes the given token" do
+    it '.from_token_string still decodes the given token' do
       id = described_class.from_token_string(unencrypted_token)
       expect(id.user_uuid).to eq('user-uuid')
     end

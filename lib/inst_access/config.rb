@@ -28,16 +28,14 @@ module InstAccess
       @signing_key = OpenSSL::PKey::RSA.new(raw_signing_key)
       if raw_encryption_key
         @encryption_key = OpenSSL::PKey::RSA.new(raw_encryption_key)
-        if @encryption_key.private?
-          raise ArgumentError, "the encryption key should be a public RSA key"
-        end
+        raise ArgumentError, 'the encryption key should be a public RSA key' if @encryption_key.private?
       end
     rescue OpenSSL::PKey::RSAError => e
       raise ArgumentError, e
     end
 
     def encryption_key
-      @encryption_key || raise(ConfigError, "Encryption key is not configured")
+      @encryption_key || raise(ConfigError, 'Encryption key is not configured')
     end
   end
 end

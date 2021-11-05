@@ -28,8 +28,8 @@ describe InstAccess do
   let(:encryption_priv_key) { encryption_keypair.to_s }
   let(:encryption_pub_key) { encryption_keypair.public_key.to_s }
 
-  describe ".configure" do
-    it "blows up if you try to pass a private key for encryption" do
+  describe '.configure' do
+    it 'blows up if you try to pass a private key for encryption' do
       expect do
         described_class.configure(
           signing_key: signing_priv_key,
@@ -40,7 +40,7 @@ describe InstAccess do
 
     it "blows up if you pass it something that isn't an RSA key" do
       expect do
-        described_class.configure(signing_key: "asdf123")
+        described_class.configure(signing_key: 'asdf123')
       end.to raise_error(ArgumentError)
     end
   end

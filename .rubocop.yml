@@ -1,0 +1,106 @@
+require:
+  - outrigger/cops/migration/tagged
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 2.5
+
+Metrics/AbcSize:
+  Max: 20  # Default: 15
+
+Metrics/ClassLength:
+  Max: 225  # Default: 100
+
+Metrics/MethodLength:
+  Max: 20  # Default: 10
+
+Metrics/ModuleLength:
+  Max: 200  # Default: 100
+
+Metrics/BlockLength:
+  Max: 30
+  Exclude:
+    - spec/**/*.rb
+
+Layout/ArgumentAlignment:
+  # Alignment of arguments in multi-line method calls.
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the method call.
+  #
+  #     method_call(a,
+  #       b)
+  EnforcedStyle: with_fixed_indentation
+
+Layout/ParameterAlignment:
+  # Alignment of parameters in multi-line method calls.
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the method call.
+  #
+  #     method_call(a,
+  #       b)
+  EnforcedStyle: with_fixed_indentation
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Layout/LineLength:
+  Max: 120  # Default: 80
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false
+
+Lint/NoReturnInBeginEndBlocks:
+  Enabled: false
+
+Migration/Tagged:
+  Enabled: true
+  AllowedTags:
+    - predeploy
+    - postdeploy
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  # Checks the style of children definitions at classes and modules.
+  #
+  # Basically there are two different styles:
+  #
+  # `nested` - have each child on a separate line
+  #   class Foo
+  #     class Bar
+  #     end
+  #   end
+  #
+  # `compact` - combine definitions as much as possible
+  #   class Foo::Bar
+  #   end
+  #
+  # The compact style is only forced, for classes / modules with one child.
+  EnforcedStyle: nested
+  Enabled: false
+
+Style/Documentation:
+  # This cop checks for missing top-level documentation of classes and modules.
+  # Classes with no body and namespace modules are exempt from the check.
+  # Namespace modules are modules that have nothing in their bodies except
+  # classes or other modules.
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
