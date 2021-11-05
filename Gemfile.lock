@@ -8,11 +8,6 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.4.1)
-      activesupport (= 6.1.4.1)
-    activerecord (6.1.4.1)
-      activemodel (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
     activesupport (6.1.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
@@ -34,8 +29,6 @@ GEM
       aes_key_wrap
       bindata
     minitest (5.14.4)
-    outrigger (3.0.0)
-      activerecord (>= 6.0, < 6.2)
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
@@ -89,7 +82,6 @@ DEPENDENCIES
   bundler
   byebug
   inst_access!
-  outrigger
   rspec
   rubocop (~> 1.8.1)
   simplecov
