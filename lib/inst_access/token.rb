@@ -50,6 +50,10 @@ module InstAccess
       jwt_payload[:masq_shard]
     end
 
+    def region
+      jwt_payload[:region]
+    end
+
     def to_token_string
       jwe = to_jws.encrypt(InstAccess.config.encryption_key, ENCRYPTION_ALGO, ENCRYPTION_METHOD)
       jwe.to_s
@@ -74,7 +78,7 @@ module InstAccess
     class << self
       private :new
 
-      # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/ParameterLists
       def for_user(
         user_uuid: nil,
         account_uuid: nil,
@@ -82,27 +86,30 @@ module InstAccess
         real_user_uuid: nil,
         real_user_shard_id: nil,
         user_global_id: nil,
-        real_user_global_id: nil
+        real_user_global_id: nil,
+        region: nil
       )
         raise ArgumentError, 'Must provide user uuid and account uuid' if user_uuid.blank? || account_uuid.blank?
 
         now = Time.now.to_i
+
         payload = {
           iss: ISSUER,
           iat: now,
           exp: now + 1.hour.to_i,
           sub: user_uuid,
-          acct: account_uuid
-        }
-        payload[:canvas_domain] = canvas_domain if canvas_domain
-        payload[:masq_sub] = real_user_uuid if real_user_uuid
-        payload[:masq_shard] = real_user_shard_id if real_user_shard_id
-        payload[:debug_user_global_id] = user_global_id.to_s if user_global_id
-        payload[:debug_masq_global_id] = real_user_global_id.to_s if real_user_global_id
+          acct: account_uuid,
+          canvas_domain: canvas_domain,
+          masq_sub: real_user_uuid,
+          masq_shard: real_user_shard_id,
+          debug_user_global_id: user_global_id&.to_s,
+          debug_masq_global_id: real_user_global_id&.to_s,
+          region: region
+        }.compact
 
         new(payload)
       end
-      # rubocop:enable Metrics/ParameterLists, Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/ParameterLists
 
       # Takes an unencrypted (but signed) token string
       def from_token_string(jws)

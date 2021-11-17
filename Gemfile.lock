@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    inst_access (0.1.0)
+    inst_access (0.1.1)
       activesupport (>= 5)
       json-jwt (= 1.13.0)
 

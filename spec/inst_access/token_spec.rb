@@ -74,6 +74,7 @@ describe InstAccess::Token do
     it 'creates an instance for the given uuids' do
       id = described_class.for_user(user_uuid: 'user-uuid', account_uuid: 'acct-uuid')
       expect(id.user_uuid).to eq('user-uuid')
+      expect(id.account_uuid).to eq('acct-uuid')
       expect(id.masquerading_user_uuid).to be_nil
     end
 
@@ -83,11 +84,31 @@ describe InstAccess::Token do
         account_uuid: 'acct-uuid',
         canvas_domain: 'z.instructure.com',
         real_user_uuid: 'masq-id',
-        real_user_shard_id: 5
+        real_user_shard_id: 5,
+        region: 'us-west-2'
       )
       expect(id.canvas_domain).to eq('z.instructure.com')
       expect(id.masquerading_user_uuid).to eq('masq-id')
       expect(id.masquerading_user_shard_id).to eq(5)
+      expect(id.region).to eq('us-west-2')
+    end
+
+    it 'includes global id debug info if given' do
+      id = described_class.for_user(
+        user_uuid: 'user-uuid',
+        account_uuid: 'acct-uuid',
+        user_global_id: 10_000_000_000_123,
+        real_user_global_id: 10_000_000_000_456
+      )
+
+      expect(id.jwt_payload[:debug_user_global_id]).to eq('10000000000123')
+      expect(id.jwt_payload[:debug_masq_global_id]).to eq('10000000000456')
+    end
+
+    it 'omits global id debug info if not given' do
+      id = described_class.for_user(user_uuid: 'user-uuid', account_uuid: 'acct-uuid')
+      expect(id.jwt_payload.keys).not_to include(:debug_user_global_id)
+      expect(id.jwt_payload.keys).not_to include(:debug_masq_global_id)
     end
   end
 
